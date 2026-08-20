@@ -33,3 +33,85 @@ class Produto (models.Model):
     # cria a função
     def __str__(self):
         return f"{self.nome} (qtde={self.quantidade})"
+
+# Cria a classe cliente 
+
+class Cliente(models.Model):
+
+    nome = models.CharField(max_length = 150)
+    email = models.EmailField(
+        unique = True # Registra como unico email
+    )
+
+    telefone = models.CharField(
+        max_length = 20,
+        blank = True # pode deixar em branco 
+    )
+
+    def __str__(self):
+        return super.nome
+
+
+# Cria a classe pedido 
+
+class Pedido (models.Model):
+    STATUS_CHOICES = [
+        ("PEDENDE", "Pedente"),
+        ("PAGO", "Pago"),
+        ("ENVIADO", "Enviado"),
+        ("ENTREGUE", "Entregue"),
+        ("CANCELADO", "Cancelado")
+    ]
+
+    # relacionando cliente com pedidos 
+
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete = models.CASCADE, 
+        related_name = "pedidos"
+    )
+
+    data_pedido = models.DateTimeField(
+        auto_now_add = True
+    )
+
+    status = models.CharField(
+        max_length = 20,
+        choices = STATUS_CHOICES,
+        default = "PENDENTE"
+    )
+
+    def __str__(self):
+        return f"Pedido {self.id} - {self.cliente.nome}"
+
+
+# cria a classe item pedido 
+
+class ItemPedido(models.Model):
+
+    pedido = models.ForeignKey(
+        Pedido,
+        on_delete = models.CASCADE,
+        related_name='itens'
+    )
+
+    produto = models.ForeignKey(
+        Produto,
+        on_delete = models.PROTECT
+    )
+
+    quantidade = models.PositiveIntegerField()
+
+    preco_unt = models.DecimalField(
+        max_digits= 10,
+        decimal_places= 2
+    )
+
+    def subtotal (self):
+
+        return self.quantidade * self.preco_unt
+
+    def __str__(self):
+        return f"{self.quantidade} x {self.produto.nome}"
+
+    
