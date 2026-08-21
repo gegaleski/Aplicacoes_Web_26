@@ -81,6 +81,12 @@ class Pedido (models.Model):
         default = "PENDENTE"
     )
 
+    def total(self):
+        return sum(
+            item.subtotal()
+            for item in self.itens.all()
+        )
+
     def __str__(self):
         return f"Pedido {self.id} - {self.cliente.nome}"
 
@@ -102,7 +108,7 @@ class ItemPedido(models.Model):
 
     quantidade = models.PositiveIntegerField()
 
-    preco_unt = models.DecimalField(
+    preco_unit = models.DecimalField(
         max_digits= 10,
         decimal_places= 2
     )
