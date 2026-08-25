@@ -110,8 +110,15 @@ class ItemPedido(models.Model):
 
     preco_unit = models.DecimalField(
         max_digits= 10,
-        decimal_places= 2
+        decimal_places= 2,
+        editable= False
     )
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.preco_unit = self.pedido.preco
+
+        super().save(*args, **kwargs)
 
     def subtotal (self):
 
