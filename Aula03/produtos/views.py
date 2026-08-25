@@ -34,7 +34,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
 # Pedido
 
-class PedoidoViewSet(viewsets.ModelViewSet):
+class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all().order_by("id")
     serializer_class = PedidoSerializer
 
