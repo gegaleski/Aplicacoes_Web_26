@@ -50,6 +50,10 @@ class ItemPedidoInline(admin.TabularInline):
         "preco_unit"
     ]
 
+    readonly_fields =(
+        "preco_unit"
+    )
+
 # Pedido 
 
 class PedidoAdmin(admin.ModelAdmin):
@@ -68,8 +72,9 @@ class PedidoAdmin(admin.ModelAdmin):
     ]
 
     search_fields = [
-        "cliente_nome",
-        "cliente_email"
+        "cliente__nome",
+        "cliente__email"
+        "descricao"
     ]
 
     inlines = [
@@ -98,8 +103,8 @@ class ItemPedidoAdmin(admin.ModelAdmin):
     ]
 
     search_fields = [
-        "produto_nome",
-        "pedido_cliente_nome"
+        "produto__nome",
+        "pedido__cliente__nome"
     ]
 
     def valor_subtotal(self, obj):
