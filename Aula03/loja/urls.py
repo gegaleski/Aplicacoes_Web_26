@@ -30,7 +30,7 @@ router.register(r'categorias', CategoriaViewSet)
 router.register(r'clientes', ClienteViewSet)
 router.register(r'pedidos', PedidoViewSet)
 router.register(r'item-pedidos', ItemPedidoViewSet)
-
+router.register(r'status-pedido',StatusPedidoViewSet,basename="status-pedido")
 
 urlpatterns = [
     path('',home),
