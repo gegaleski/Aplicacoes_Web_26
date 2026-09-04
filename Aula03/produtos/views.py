@@ -1,10 +1,16 @@
 from django.shortcuts import render
 from rest_framework import viewsets # importa o viewset a partir da biblioteca restframework
-from .models import  (Produto, Categoria, Cliente, Pedido, ItemPedido)
+from .models import Pedido
+from .serializers import StatusPedidoSerializer
+from rest_framework import mixins
 
-from .serializers import (ProdutoSerializer, CategoriaSerializer, ClienteSerializer, PedidoSerializer, ItemPedidoSerializer)
+from .serializers import (ProdutoSerializer, CategoriaSerializer, ClienteSerializer, PedidoSerializer, ItemPedidoSerializer,StatusPedidoSerializer) 
+from .models import (Produto, Categoria, Cliente, Pedido, ItemPedido)  
 
-# importndo metodo para exibir uma pagina home
+from rest_framework.permissions import(
+    AllowAny, IsAuthenticated
+)
+# importando metodo para exibir uma pagina home
 
 from django.http import HttpResponse
 
@@ -16,32 +22,69 @@ def home(request):
 class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all().order_by("-id")
     serializer_class = ProdutoSerializer
+    
+    # função de permissao
+    
+    def get_permissions(self):
+        
+        # Permite que qualquer pessoa consulte produtos
+        if self.action in ['list', 'retrieve']:
+            
+            return [AllowAny()]
+        
+        # Para poder cadastrar, editar ou excluir o usuario precisa estar autenticado
+        
+        return [IsAuthenticated()]
 
 
 # Categoria
 
 class CategoriaViewSet(viewsets.ModelViewSet):
-    queryset = Categoria.objects.all().order_by("id")
+    queryset = Categoria.objects.all().order_by("-id")
     serializer_class = CategoriaSerializer
+    
 
 
-# Cliente 
+# Cliente
 
 class ClienteViewSet(viewsets.ModelViewSet):
-    queryset = Cliente.objects.all().order_by("id")
+    queryset = Cliente.objects.all().order_by("-id")
     serializer_class = ClienteSerializer
-
-
+    
+    
 # Pedido
 
 class PedidoViewSet(viewsets.ModelViewSet):
-    queryset = Pedido.objects.all().order_by("id")
+    queryset = Pedido.objects.all().order_by("-id")
+    serializer_class = PedidoSerializer
+    
+    
+# ItemPedido
+
+
+class ItemPedidoViewSet(viewsets.ModelViewSet):
+    
+    queryset = ItemPedido.objects.all().order_by("-id")
+    serializer_class = ItemPedidoSerializer
+# Create your views here.
+
+
+class PedidoViewSet(viewsets.ModelViewSet):
+    queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
 
 
-# ItemPedido
 
-class ItemPedidoViewSet(viewsets.ModelViewSet):
-    queryset = ItemPedido.objects.all().order_by("id")
-    serializer_class = ItemPedidoSerializer
 
+
+
+
+class StatusPedidoViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+
+    queryset = Pedido.objects.all()
+    serializer_class = StatusPedidoSerializer
